@@ -19,6 +19,8 @@ class MainActivity : AppCompatActivity() {
     )
 
     private var currentIndex = 0
+    private var answeredCount = 0
+    private var correctCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +62,7 @@ class MainActivity : AppCompatActivity() {
         val correctAnswer = questionBank[currentIndex].answer
 
         val messageResId = if (correctAnswer == userAnswer) {
+            ++correctCount
             R.string.correct_toast
         } else {
             R.string.incorrect_toast
@@ -70,6 +73,11 @@ class MainActivity : AppCompatActivity() {
         questionBank[currentIndex].isAnswered = true
         binding.falseButton.isEnabled = false
         binding.trueButton.isEnabled = false
+        ++answeredCount
+        if (answeredCount == questionBank.size) {
+            val resultText = getString(R.string.graded_notice, correctCount * 100 / answeredCount)
+            Toast.makeText(this, resultText, Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun changeQuestion(diff: Int) {
