@@ -51,6 +51,9 @@ class MainActivity : AppCompatActivity() {
     private fun updateQuestion() {
         val questionTextResId = questionBank[currentIndex].textResId
         binding.questionTextView.setText(questionTextResId)
+        val isQuestionAnswered = questionBank[currentIndex].isAnswered
+        binding.falseButton.isEnabled = !isQuestionAnswered
+        binding.trueButton.isEnabled = !isQuestionAnswered
     }
 
     private fun checkAnswer(userAnswer: Boolean) {
@@ -63,6 +66,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
+
+        questionBank[currentIndex].isAnswered = true
+        binding.falseButton.isEnabled = false
+        binding.trueButton.isEnabled = false
     }
 
     private fun changeQuestion(diff: Int) {
