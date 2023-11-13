@@ -13,8 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:padding="24dp"
-        android:text="Question text" />
+        android:padding="24dp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -35,12 +34,27 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/next_button"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/next_button"
-        app:icon="@drawable/arrow_right"
-        app:iconGravity="end" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/prev_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/prev_button"
+            app:icon="@drawable/arrow_left"
+            app:iconGravity="start" />
+
+        <Button
+            android:id="@+id/next_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/next_button"
+            app:icon="@drawable/arrow_right"
+            app:iconGravity="end" />
+
+    </LinearLayout>
 
 </LinearLayout>
