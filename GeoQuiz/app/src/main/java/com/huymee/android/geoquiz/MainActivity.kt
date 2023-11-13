@@ -2,25 +2,17 @@ package com.huymee.android.geoquiz
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
+import androidx.activity.viewModels
 import com.huymee.android.geoquiz.databinding.ActivityMainBinding
+
+private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-
-    private val questionBank = listOf(
-        Question(R.string.question_australia, true),
-        Question(R.string.question_oceans, true),
-        Question(R.string.question_mideast, false),
-        Question(R.string.question_africa, false),
-        Question(R.string.question_americas, true),
-        Question(R.string.question_asia, true)
-    )
-
-    private var currentIndex = 0
-    private var answeredCount = 0
-    private var correctCount = 0
+    private val quizViewModel: QuizViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,18 +43,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateQuestion() {
-        val questionTextResId = questionBank[currentIndex].textResId
+        val questionTextResId = quizViewModel.currentQuestionText
         binding.questionTextView.setText(questionTextResId)
-        val isQuestionAnswered = questionBank[currentIndex].isAnswered
+        val isQuestionAnswered = quizViewModel.isCurrentQuestionAnswered
         binding.falseButton.isEnabled = !isQuestionAnswered
         binding.trueButton.isEnabled = !isQuestionAnswered
     }
 
     private fun checkAnswer(userAnswer: Boolean) {
-        val correctAnswer = questionBank[currentIndex].answer
+        val correctAnswer = quizViewModel.currentQuestionAnswer
 
         val messageResId = if (correctAnswer == userAnswer) {
-            ++correctCount
+            quizViewModel.correctCount++
             R.string.correct_toast
         } else {
             R.string.incorrect_toast
@@ -70,18 +62,18 @@ class MainActivity : AppCompatActivity() {
 
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
 
-        questionBank[currentIndex].isAnswered = true
+        quizViewModel.isCurrentQuestionAnswered = true
         binding.falseButton.isEnabled = false
         binding.trueButton.isEnabled = false
-        ++answeredCount
-        if (answeredCount == questionBank.size) {
-            val resultText = getString(R.string.graded_notice, correctCount * 100 / answeredCount)
+        quizViewModel.answeredCount++
+        if (quizViewModel.isCompleted) {
+            val resultText = getString(R.string.graded_notice, quizViewModel.score)
             Toast.makeText(this, resultText, Toast.LENGTH_LONG).show()
         }
     }
 
     private fun changeQuestion(diff: Int) {
-        currentIndex = (currentIndex + questionBank.size + diff) % questionBank.size
+        quizViewModel.changeQuestion(diff)
         updateQuestion()
     }
 }
