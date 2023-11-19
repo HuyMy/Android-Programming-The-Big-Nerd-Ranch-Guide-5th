@@ -1,5 +1,6 @@
 package com.huymee.android.geoquiz
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -37,6 +38,12 @@ class MainActivity : AppCompatActivity() {
 
         binding.nextButton.setOnClickListener {
             changeQuestion(1)
+        }
+
+        binding.cheatButton.setOnClickListener {
+            val answerIsTrue = quizViewModel.currentQuestionAnswer
+            val intent = CheatActivity.newIntent(this@MainActivity, answerIsTrue)
+            startActivity(intent)
         }
 
         updateQuestion()
