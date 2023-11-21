@@ -1,10 +1,13 @@
 package com.huymee.android.geoquiz
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.huymee.android.geoquiz.databinding.ActivityCheatBinding
+
+const val EXTRA_ANSWER_SHOWN = "com.huymee.android.geoquiz.answer_shown"
 
 private const val EXTRA_ANSWER_IS_TRUE = "com.huymee.android.geoquiz.answer_is_true"
 
@@ -34,6 +37,14 @@ class CheatActivity : AppCompatActivity() {
                 else -> R.string.false_button
             }
             binding.answerTextView.setText(answerText)
+            setAnswerShownResult()
         }
+    }
+
+    private fun setAnswerShownResult() {
+        val data = Intent().apply {
+            putExtra(EXTRA_ANSWER_SHOWN, true)
+        }
+        setResult(Activity.RESULT_OK, data)
     }
 }
