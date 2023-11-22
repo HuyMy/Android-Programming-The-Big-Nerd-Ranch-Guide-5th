@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.annotation.StringRes
 import com.huymee.android.geoquiz.databinding.ActivityMainBinding
 
 private const val TAG = "MainActivity"
@@ -19,8 +20,14 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            quizViewModel.isCheater =
-                result.data?.getBooleanExtra(EXTRA_ANSWER_SHOWN, false) ?: false
+            if (!quizViewModel.isCurrentQuestionCheated) {
+                quizViewModel.isCurrentQuestionCheated =
+                    result.data?.getBooleanExtra(EXTRA_ANSWER_SHOWN, false) ?: false
+            }
+
+            if (!quizViewModel.isCurrentQuestionAnswered && quizViewModel.isCurrentQuestionCheated) {
+                showRespond(R.string.judgment_toast)
+            }
         }
     }
 
@@ -61,7 +68,7 @@ class MainActivity : AppCompatActivity() {
     private fun updateQuestion() {
         val questionTextResId = quizViewModel.currentQuestionText
         binding.questionTextView.setText(questionTextResId)
-        val buttonEnabled = !quizViewModel.isCurrentQuestionAnswered && !quizViewModel.isCheater
+        val buttonEnabled = !quizViewModel.isCurrentQuestionAnswered && !quizViewModel.isCurrentQuestionCheated
         binding.falseButton.isEnabled = buttonEnabled
         binding.trueButton.isEnabled = buttonEnabled
     }
@@ -70,7 +77,7 @@ class MainActivity : AppCompatActivity() {
         val correctAnswer = quizViewModel.currentQuestionAnswer
 
         val messageResId = when {
-            quizViewModel.isCheater -> R.string.judgment_toast
+            quizViewModel.isCurrentQuestionCheated -> R.string.judgment_toast
             userAnswer == correctAnswer -> {
                 quizViewModel.correctCount++
                 R.string.correct_toast
@@ -78,20 +85,28 @@ class MainActivity : AppCompatActivity() {
             else -> R.string.incorrect_toast
         }
 
-        Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
+        showRespond(messageResId)
+    }
 
-        quizViewModel.isCurrentQuestionAnswered = true
+    private fun markQuestionAnswered() {
         binding.falseButton.isEnabled = false
         binding.trueButton.isEnabled = false
+        quizViewModel.isCurrentQuestionAnswered = true
         quizViewModel.answeredCount++
-        if (quizViewModel.isCompleted) {
-            val resultText = getString(R.string.graded_notice, quizViewModel.score)
-            Toast.makeText(this, resultText, Toast.LENGTH_LONG).show()
-        }
     }
 
     private fun changeQuestion(diff: Int) {
         quizViewModel.changeQuestion(diff)
         updateQuestion()
+    }
+
+    private fun showRespond(@StringRes messageResId: Int) {
+        markQuestionAnswered()
+        Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
+
+        if (quizViewModel.isCompleted) {
+            val resultText = getString(R.string.graded_notice, quizViewModel.score)
+            Toast.makeText(this, resultText, Toast.LENGTH_LONG).show()
+        }
     }
 }

@@ -7,7 +7,6 @@ private const val TAG = "QuizViewModel"
 const val CURRENT_INDEX_KEY = "CURRENT_INDEX_KEY"
 const val ANSWERED_COUNT_KEY = "ANSWERED_COUNT_KEY"
 const val CORRECT_COUNT_KEY = "CORRECT_COUNT_KEY"
-const val IS_CHEATER_KEY = "IS_CHEATER_KEY"
 
 class QuizViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
 
@@ -44,9 +43,11 @@ class QuizViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel(
             questionBank[currentIndex].isAnswered = value
         }
 
-    var isCheater: Boolean
-        get() = savedStateHandle.get(IS_CHEATER_KEY) ?: false
-        set(value) = savedStateHandle.set(IS_CHEATER_KEY, value)
+    var isCurrentQuestionCheated: Boolean
+        get() = questionBank[currentIndex].isCheated
+        set(value) {
+            questionBank[currentIndex].isCheated = value
+        }
 
     val isCompleted: Boolean
         get() = answeredCount == questionBank.size
