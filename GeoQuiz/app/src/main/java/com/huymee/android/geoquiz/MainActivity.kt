@@ -66,6 +66,9 @@ class MainActivity : AppCompatActivity() {
             cheatLauncher.launch(intent)
         }
 
+        binding.androidVersionTextView.text =
+            getString(R.string.android_version_text, Build.VERSION.SDK_INT)
+
         updateQuestion()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
