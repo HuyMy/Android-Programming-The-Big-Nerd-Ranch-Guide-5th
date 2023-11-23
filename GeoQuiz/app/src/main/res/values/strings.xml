@@ -18,4 +18,8 @@
     <string name="cheat_button">Cheat!</string>
     <string name="judgment_toast">Cheating is wrong.</string>
     <string name="android_version_text">API Level %d</string>
+    <plurals name="cheat_remaining">
+        <item quantity="one">Remaining: %d time</item>
+        <item quantity="other">Remaining: %d times</item>
+    </plurals>
 </resources>

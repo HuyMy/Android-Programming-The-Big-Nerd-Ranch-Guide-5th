@@ -65,8 +65,14 @@
         android:text="@string/cheat_button" />
 
     <TextView
+        android:id="@+id/cheat_remain_count_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp" />
+
+    <TextView
         android:id="@+id/android_version_text_view"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="36dp"
         android:textSize="12sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
