@@ -48,7 +48,7 @@ class CrimeDetailFragment : Fragment() {
             }
 
             crimeDate.apply {
-                text = crime.date.toString()
+                text = Utils.getFormattedDate(crime.date)
                 isEnabled = false
             }
 

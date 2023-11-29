@@ -27,7 +27,7 @@ class CrimeHolder(
     fun bind(crime: Crime) {
         binding.apply {
             crimeTitle.text = crime.title
-            crimeDate.text = crime.date.toString()
+            crimeDate.text = Utils.getFormattedDate(crime.date)
 
             root.setOnClickListener {
                 Toast.makeText(
