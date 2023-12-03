@@ -1,8 +1,10 @@
 package com.huymee.android.criminalintent
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 private const val TAG = "CrimeListViewModel"
@@ -10,19 +12,15 @@ class CrimeListViewModel : ViewModel() {
 
     private val crimeRepository = CrimeRepository.get()
 
-    val crimes = mutableListOf<Crime>()
+    private val _crimes: MutableStateFlow<List<Crime>> = MutableStateFlow(emptyList())
+    val crimes: StateFlow<List<Crime>>
+        get() = _crimes.asStateFlow()
 
     init {
-        Log.i(TAG, "init starting")
         viewModelScope.launch {
-            Log.i(TAG, "coroutine launched")
-            crimes += loadCrimes()
-            Log.i(TAG, "Loading crimes finished")
+            crimeRepository.getCrimes().collect{
+                _crimes.value = it
+            }
         }
-
-    }
-
-    suspend fun loadCrimes(): List<Crime> {
-        return crimeRepository.getCrimes()
     }
 }
