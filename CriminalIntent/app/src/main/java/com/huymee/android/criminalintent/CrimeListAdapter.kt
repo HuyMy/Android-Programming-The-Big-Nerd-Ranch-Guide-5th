@@ -3,11 +3,14 @@ package com.huymee.android.criminalintent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.huymee.android.criminalintent.databinding.ListItemCrimeBinding
+import java.util.UUID
 
-class CrimeListAdapter(private val crimes: List<Crime>) : RecyclerView.Adapter<CrimeHolder>() {
+class CrimeListAdapter(
+    private val crimes: List<Crime>,
+    private val onCrimeClick: (crimeId: UUID) -> Unit
+) : RecyclerView.Adapter<CrimeHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CrimeHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ListItemCrimeBinding.inflate(inflater, parent, false)
@@ -17,24 +20,20 @@ class CrimeListAdapter(private val crimes: List<Crime>) : RecyclerView.Adapter<C
 
     override fun onBindViewHolder(holder: CrimeHolder, position: Int) {
         val crime = crimes[position]
-        holder.bind(crime)
+        holder.bind(crime, onCrimeClick)
     }
 }
 
 class CrimeHolder(
     private val binding: ListItemCrimeBinding
-) : RecyclerView.ViewHolder(binding.root){
-    fun bind(crime: Crime) {
+) : RecyclerView.ViewHolder(binding.root) {
+    fun bind(crime: Crime, onCrimeClick: (crimeId: UUID) -> Unit) {
         binding.apply {
             crimeTitle.text = crime.title
             crimeDate.text = Utils.getFormattedDate(crime.date)
 
             root.setOnClickListener {
-                Toast.makeText(
-                    root.context,
-                    "${crime.title} clicked!",
-                    Toast.LENGTH_SHORT
-                ).show()
+                onCrimeClick(crime.id)
             }
 
             crimeSolved.visibility = if (crime.isSolved) {

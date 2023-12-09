@@ -9,5 +9,18 @@
         android:id="@+id/crimeListFragment"
         android:name="com.huymee.android.criminalintent.CrimeListFragment"
         android:label="CrimeListFragment"
-        tools:layout="@layout/fragment_crime_list" />
+        tools:layout="@layout/fragment_crime_list" >
+        <action
+            android:id="@+id/show_crime_details"
+            app:destination="@id/crimeDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/crimeDetailFragment"
+        android:name="com.huymee.android.criminalintent.CrimeDetailFragment"
+        android:label="CrimeDetailFragment"
+        tools:layout="@layout/fragment_crime_detail" >
+        <argument
+            android:name="crimeId"
+            app:argType="java.util.UUID" />
+    </fragment>
 </navigation>
