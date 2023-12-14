@@ -87,9 +87,9 @@ class CrimeDetailFragment : Fragment() {
         }
 
         setFragmentResultListener(
-            DatePickerFragment.REQUEST_KEY_DATE
+            REQUEST_KEY_DATE
         ) { _, bundle ->
-            bundle.customGetSerializable<Date>(DatePickerFragment.BUNDLE_KEY_DATE)?.let {newDate ->
+            bundle.customGetSerializable<Date>(BUNDLE_KEY_DATE)?.let {newDate ->
                 crimeDetailViewModel.updateCrime { it.copy(date = newDate) }
             }
         }
@@ -106,6 +106,14 @@ class CrimeDetailFragment : Fragment() {
                 setOnClickListener {
                     findNavController().navigate(
                         CrimeDetailFragmentDirections.selectDate(crime.date)
+                    )
+                }
+            }
+            crimeTime.apply {
+                text = Utils.getFormattedTime(crime.date)
+                setOnClickListener {
+                    findNavController().navigate(
+                        CrimeDetailFragmentDirections.selectTime(crime.date)
                     )
                 }
             }

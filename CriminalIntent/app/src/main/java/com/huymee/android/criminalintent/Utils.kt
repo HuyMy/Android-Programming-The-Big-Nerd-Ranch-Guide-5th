@@ -9,4 +9,9 @@ object Utils {
         val dateFormat = SimpleDateFormat("EEEE, MMM dd, yyyy", Locale.ENGLISH)
         return dateFormat.format(date)
     }
+
+    fun getFormattedTime(date: Date): String {
+        val dateFormat = SimpleDateFormat("HH : mm", Locale.ENGLISH)
+        return dateFormat.format(date)
+    }
 }
