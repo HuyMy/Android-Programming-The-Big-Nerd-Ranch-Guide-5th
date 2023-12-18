@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -14,6 +13,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.huymee.android.criminalintent.databinding.FragmentCrimeListBinding
 import kotlinx.coroutines.launch
+import java.util.Date
+import java.util.UUID
 
 private const val TAG = "CrimeListFragment"
 
@@ -56,7 +57,7 @@ class CrimeListFragment : Fragment() {
         binding.topAppBar.setOnMenuItemClickListener {menuItem ->
             when (menuItem.itemId) {
                 R.id.new_crime -> {
-                    Toast.makeText(requireContext(), "New Crime", Toast.LENGTH_SHORT).show()
+                    showNewCrime()
                     true
                 }
                 else -> false
@@ -67,5 +68,21 @@ class CrimeListFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun showNewCrime() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val newCrime = Crime(
+                id = UUID.randomUUID(),
+                title = "",
+                date = Date(),
+                isSolved = false
+            )
+
+            crimeListViewModel.addCrime(newCrime)
+            findNavController().navigate(
+                CrimeListFragmentDirections.showCrimeDetails(newCrime.id )
+            )
+        }
     }
 }
