@@ -76,6 +76,17 @@ class CrimeDetailFragment : Fragment() {
                     oldCrime.copy(isSolved = isChecked)
                 }
             }
+
+            topAppBar.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.delete_crime -> {
+                        crimeDetailViewModel.deleteCrime()
+                        findNavController().popBackStack()
+                        true
+                    }
+                    else -> false
+                }
+            }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
