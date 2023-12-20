@@ -30,7 +30,7 @@ class CrimeHolder(
     fun bind(crime: Crime, onCrimeClick: (crimeId: UUID) -> Unit) {
         binding.apply {
             crimeTitle.text = crime.title
-            crimeDate.text = Utils.getFormattedDate(crime.date)
+            crimeDate.text = Utils.getFullFormattedDate(crime.date)
 
             root.setOnClickListener {
                 onCrimeClick(crime.id)

@@ -4,14 +4,18 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-object Utils {
-    fun getFormattedDate(date: Date): String {
-        val dateFormat = SimpleDateFormat("EEEE, MMM dd, yyyy", Locale.ENGLISH)
-        return dateFormat.format(date)
-    }
+private const val DATE_FULL_FORMAT = "EEEE, MMM dd, yyyy"
+private const val DATE_SHORT_FORMAT = "EEE, MMM, dd"
+private const val TIME_FORMAT = "HH : mm"
 
-    fun getFormattedTime(date: Date): String {
-        val dateFormat = SimpleDateFormat("HH : mm", Locale.ENGLISH)
-        return dateFormat.format(date)
+object Utils {
+    fun getFullFormattedDate(date: Date) = getFormattedDateString(date, DATE_FULL_FORMAT)
+
+    fun getShortFormattedDate(date: Date) = getFormattedDateString(date, DATE_SHORT_FORMAT)
+
+    fun getFormattedTime(date: Date) = getFormattedDateString(date, TIME_FORMAT)
+
+    private fun getFormattedDateString(date: Date, pattern: String): String {
+        return SimpleDateFormat(pattern, Locale.ENGLISH).format(date)
     }
 }

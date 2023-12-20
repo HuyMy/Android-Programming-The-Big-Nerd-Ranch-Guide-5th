@@ -1,5 +1,6 @@
 package com.huymee.android.criminalintent
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -113,7 +114,7 @@ class CrimeDetailFragment : Fragment() {
             }
             crimeSolved.isChecked = crime.isSolved
             crimeDate.apply {
-                text = Utils.getFormattedDate(crime.date)
+                text = Utils.getFullFormattedDate(crime.date)
                 setOnClickListener {
                     findNavController().navigate(
                         CrimeDetailFragmentDirections.selectDate(crime.date)
@@ -128,7 +129,37 @@ class CrimeDetailFragment : Fragment() {
                     )
                 }
             }
+
+            crimeReport.setOnClickListener {
+                Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, getCrimeReport(crime))
+                    putExtra(Intent.EXTRA_SUBJECT, getString(R.string.crime_report_subject))
+                }.also {
+                    startActivity(it)
+                }
+            }
         }
+    }
+
+    private fun getCrimeReport(crime: Crime): String {
+        val solvedString = if (crime.isSolved) {
+            getString(R.string.crime_report_solved)
+        } else {
+            getString(R.string.crime_report_unsolved)
+        }
+
+        val dateString = Utils.getShortFormattedDate(crime.date)
+        val suspectText = if (crime.suspect.isBlank()) {
+            getString(R.string.crime_report_no_suspect)
+        } else {
+            getString(R.string.crime_report_suspect, crime.suspect)
+        }
+
+        return getString(
+            R.string.crime_report,
+            crime.title, dateString, solvedString, suspectText
+        )
     }
 
     override fun onDestroyView() {
