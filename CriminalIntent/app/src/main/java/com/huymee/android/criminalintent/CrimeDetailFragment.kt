@@ -125,14 +125,19 @@ class CrimeDetailFragment : Fragment() {
                 checkContactPermissionAndCall()
             }
 
-            topAppBar.setOnMenuItemClickListener { menuItem ->
-                when (menuItem.itemId) {
-                    R.id.delete_crime -> {
-                        crimeDetailViewModel.deleteCrime()
-                        findNavController().popBackStack()
-                        true
+            topAppBar.apply {
+                setOnMenuItemClickListener { menuItem ->
+                    when (menuItem.itemId) {
+                        R.id.delete_crime -> {
+                            crimeDetailViewModel.deleteCrime()
+                            findNavController().popBackStack()
+                            true
+                        }
+                        else -> false
                     }
-                    else -> false
+                }
+                setNavigationOnClickListener {
+                    requireActivity().onBackPressedDispatcher.onBackPressed()
                 }
             }
         }
