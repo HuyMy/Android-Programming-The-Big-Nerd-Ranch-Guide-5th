@@ -7,12 +7,16 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
@@ -22,15 +26,33 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.snackbar.Snackbar
 import com.huymee.android.criminalintent.databinding.FragmentCrimeDetailBinding
 import kotlinx.coroutines.launch
 import java.io.Serializable
 import java.util.Date
 
+private const val TAG = "CrimeDetailFragment"
+private const val READ_CONTACT_PERMISSION = android.Manifest.permission.READ_CONTACTS
+
 
 class CrimeDetailFragment : Fragment() {
 
     private var _binding: FragmentCrimeDetailBinding? = null
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) {isGranted ->
+            if (isGranted) {
+                crimeDetailViewModel.isPermissionDenied = false
+                callsSuspect()
+            } else {
+                Toast.makeText(
+                    requireContext(), getString(R.string.permission_denied), Toast.LENGTH_SHORT
+                ).show()
+                crimeDetailViewModel.isPermissionDenied = true
+            }
+        }
+
     private val binding: FragmentCrimeDetailBinding
         get() = checkNotNull(_binding) {
             "Cannot access binding because it is null. Is the view visible?"
@@ -40,7 +62,7 @@ class CrimeDetailFragment : Fragment() {
     private val args: CrimeDetailFragmentArgs by navArgs()
 
     private val crimeDetailViewModel: CrimeDetailViewModel by viewModels {
-        CrimeDetailViewModelFactory(args.crimeId)
+        CrimeDetailViewModelFactory(args.crimeId, requireActivity().application)
     }
 
     private val selectSuspect = registerForActivityResult(
@@ -98,6 +120,10 @@ class CrimeDetailFragment : Fragment() {
                 null
             )
             crimeSuspect.isEnabled = canResolveIntent(selectSuspectIntent)
+
+            callSuspect.setOnClickListener {
+                checkContactPermissionAndCall()
+            }
 
             topAppBar.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
@@ -162,6 +188,7 @@ class CrimeDetailFragment : Fragment() {
             }
 
             crimeSuspect.text = crime.suspect.ifEmpty {
+                callSuspect.isEnabled = false
                 getString(R.string.crime_suspect_text)
             }
         }
@@ -188,7 +215,7 @@ class CrimeDetailFragment : Fragment() {
     }
 
     private fun parseContactSelection(contactUri: Uri) {
-        val queryFields = arrayOf(ContactsContract.Contacts.DISPLAY_NAME)
+        val queryFields = arrayOf(ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.Contacts._ID)
 
         val queryCursor = requireActivity().contentResolver
             .query(contactUri, queryFields, null, null, null)
@@ -196,9 +223,11 @@ class CrimeDetailFragment : Fragment() {
         queryCursor?.use {cursor ->
             if (cursor.moveToFirst()) {
                 val suspect = cursor.getString(0)
+                val contactId = cursor.getString(1)
                 crimeDetailViewModel.updateCrime {oldCrime ->
-                    oldCrime.copy(suspect = suspect)
+                    oldCrime.copy(suspect = suspect, contactId = contactId)
                 }
+                binding.callSuspect.isEnabled = true
             }
         }
     }
@@ -216,6 +245,56 @@ class CrimeDetailFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun callsSuspect() {
+        crimeDetailViewModel.getPhoneNumber()?.let { phoneNumber ->
+            Intent(Intent.ACTION_DIAL).apply {
+                data = Uri.parse("tel:$phoneNumber")
+            }.also { startActivity(it) }
+        } ?: Toast.makeText(requireContext(),
+            "Cannot retrieve phone number",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    private fun checkContactPermissionAndCall() = when {
+        ContextCompat.checkSelfPermission(
+            requireContext(), READ_CONTACT_PERMISSION
+        ) == PackageManager.PERMISSION_GRANTED -> {
+            crimeDetailViewModel.isPermissionDenied = true
+            callsSuspect()
+        }
+        ActivityCompat.shouldShowRequestPermissionRationale(
+            requireActivity(), READ_CONTACT_PERMISSION) -> {
+            Snackbar.make(
+                binding.root, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE
+            ).setAction(android.R.string.ok) {
+                requestPermissionLauncher.launch(READ_CONTACT_PERMISSION)
+            }.show()
+        }
+        crimeDetailViewModel.isPermissionDenied -> openPermissionSettingDialog()
+        else -> requestPermissionLauncher.launch(READ_CONTACT_PERMISSION)
+    }
+
+    private fun openPermissionSettingDialog() {
+        AlertDialog.Builder(requireContext())
+            .setMessage(R.string.message_permission_disabled)
+            .setPositiveButton(getString(android.R.string.ok)) { dialog, _ ->
+                Intent().apply {
+                    action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                    data = Uri.fromParts("package", requireActivity().packageName, null)
+                }.also {
+                    startActivity(it)
+                }
+                dialog.cancel()
+            }
+            .setNegativeButton(getString(android.R.string.cancel)) { dialog, _ ->
+                dialog.cancel()
+            }
+            .show().apply {
+                setCanceledOnTouchOutside(true)
+            }
     }
 
     private inline fun <reified T : Serializable> Bundle.customGetSerializable(key: String): T? =

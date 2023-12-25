@@ -19,4 +19,10 @@
     <string name="crime_report_suspect">the suspect is %s.</string>
     <string name="crime_report_subject">CriminalIntent Crime Report</string>
     <string name="send_report">Send crime report via</string>
+    <string name="call_suspect">Call suspect</string>
+    <string name="permission_rationale">Contacts permissions are needed to do the phone call</string>
+    <string name="permission_denied">Permission was denied, phone call can not be done</string>
+    <string name="message_permission_disabled">You have disabled the permissions permanently.\n
+        To enable the permissions, please go to Settings -> Permissions and enable the required Permissions,
+        pressing OK you will be navigated to Settings screen</string>
 </resources>
