@@ -17,6 +17,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
+import androidx.core.view.doOnLayout
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
@@ -29,6 +31,7 @@ import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import com.huymee.android.criminalintent.databinding.FragmentCrimeDetailBinding
 import kotlinx.coroutines.launch
+import java.io.File
 import java.io.Serializable
 import java.util.Date
 
@@ -71,6 +74,16 @@ class CrimeDetailFragment : Fragment() {
         uri?.let { parseContactSelection(it) }
     }
 
+    private val takePhoto = registerForActivityResult(
+        ActivityResultContracts.TakePicture()
+    ) { didTakePhoto: Boolean ->
+        if (didTakePhoto && photoName != null) {
+            crimeDetailViewModel.updateCrime { oldCrime ->
+                oldCrime.copy(photoFileName = photoName)
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requireActivity().onBackPressedDispatcher.addCallback(this) {
@@ -85,6 +98,8 @@ class CrimeDetailFragment : Fragment() {
             }
         }
     }
+
+    private var photoName: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -124,6 +139,24 @@ class CrimeDetailFragment : Fragment() {
             callSuspect.setOnClickListener {
                 checkContactPermissionAndCall()
             }
+
+            crimeCamera.setOnClickListener {
+                photoName = "IMG_${Date()}.JPG"
+                val photoFile = File(requireContext().applicationContext.filesDir, photoName!!)
+                val photoUri = FileProvider.getUriForFile(
+                    requireContext(),
+                    "com.huymee.android.criminalintent.fileprovider",
+                    photoFile
+                )
+                takePhoto.launch(photoUri)
+            }
+
+            val captureImageIntent = takePhoto.contract.createIntent(
+                requireContext(),
+                Uri.parse("")
+            )
+
+            crimeCamera.isEnabled = canResolveIntent(captureImageIntent)
 
             topAppBar.apply {
                 setOnMenuItemClickListener { menuItem ->
@@ -197,6 +230,7 @@ class CrimeDetailFragment : Fragment() {
                 getString(R.string.crime_suspect_text)
             }
         }
+        updatePhoto(crime.photoFileName)
     }
 
     private fun getCrimeReport(crime: Crime): String {
@@ -300,6 +334,29 @@ class CrimeDetailFragment : Fragment() {
             .show().apply {
                 setCanceledOnTouchOutside(true)
             }
+    }
+
+    private fun updatePhoto(photoFileName: String?) {
+        if (binding.crimePhoto.tag != photoFileName) {
+            val photoFile = photoFileName?.let {
+                File(requireContext().applicationContext.filesDir, it)
+            }
+
+            if (photoFile?.exists() == true) {
+                binding.crimePhoto.doOnLayout { measuredView ->
+                    val scaledBitmap = getScaledBitmap(
+                        photoFile.path,
+                        measuredView.width,
+                        measuredView.height
+                    )
+                    binding.crimePhoto.setImageBitmap(scaledBitmap)
+                    binding.crimePhoto.tag = photoFileName
+                }
+            } else {
+                binding.crimePhoto.tag = null
+                binding.crimePhoto.setImageBitmap(null)
+            }
+        }
     }
 
     private inline fun <reified T : Serializable> Bundle.customGetSerializable(key: String): T? =
