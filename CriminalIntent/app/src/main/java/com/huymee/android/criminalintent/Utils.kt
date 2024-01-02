@@ -14,7 +14,7 @@ private const val PREFERENCE_FILE_KEY = "com.huymee.android.criminalintent.share
 object Utils {
     fun getFullFormattedDate(date: Date) = getFormattedDateString(date, DATE_FULL_FORMAT)
 
-    fun getShortFormattedDate(date: Date) = getFormattedDateString(date, DATE_SHORT_FORMAT)
+    private fun getShortFormattedDate(date: Date) = getFormattedDateString(date, DATE_SHORT_FORMAT)
 
     fun getFormattedTime(date: Date) = getFormattedDateString(date, TIME_FORMAT)
 
@@ -35,5 +35,25 @@ object Utils {
         val sharedPref = application?.getSharedPreferences(PREFERENCE_FILE_KEY, Context.MODE_PRIVATE)
             ?: return false
         return sharedPref.getBoolean(key, false)
+    }
+
+    fun getCrimeReport(context: Context, crime: Crime): String {
+        val solvedString = if (crime.isSolved) {
+            context.getString(R.string.crime_report_solved)
+        } else {
+            context.getString(R.string.crime_report_unsolved)
+        }
+
+        val dateString = getShortFormattedDate(crime.date)
+        val suspectText = if (crime.suspect.isBlank()) {
+            context.getString(R.string.crime_report_no_suspect)
+        } else {
+            context.getString(R.string.crime_report_suspect, crime.suspect)
+        }
+
+        return context.getString(
+            R.string.crime_report,
+            crime.title, dateString, solvedString, suspectText
+        )
     }
 }

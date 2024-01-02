@@ -218,7 +218,7 @@ class CrimeDetailFragment : Fragment() {
             crimeReport.setOnClickListener {
                 Intent(Intent.ACTION_SEND).apply {
                     type = "text/plain"
-                    putExtra(Intent.EXTRA_TEXT, getCrimeReport(crime))
+                    putExtra(Intent.EXTRA_TEXT, Utils.getCrimeReport(requireContext(), crime))
                     putExtra(Intent.EXTRA_SUBJECT, getString(R.string.crime_report_subject))
                 }.also {
                     startActivity(it)
@@ -231,26 +231,6 @@ class CrimeDetailFragment : Fragment() {
             }
         }
         updatePhoto(crime.photoFileName)
-    }
-
-    private fun getCrimeReport(crime: Crime): String {
-        val solvedString = if (crime.isSolved) {
-            getString(R.string.crime_report_solved)
-        } else {
-            getString(R.string.crime_report_unsolved)
-        }
-
-        val dateString = Utils.getShortFormattedDate(crime.date)
-        val suspectText = if (crime.suspect.isBlank()) {
-            getString(R.string.crime_report_no_suspect)
-        } else {
-            getString(R.string.crime_report_suspect, crime.suspect)
-        }
-
-        return getString(
-            R.string.crime_report,
-            crime.title, dateString, solvedString, suspectText
-        )
     }
 
     private fun parseContactSelection(contactUri: Uri) {

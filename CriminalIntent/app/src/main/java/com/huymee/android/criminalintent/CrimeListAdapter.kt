@@ -35,6 +35,7 @@ class CrimeHolder(
             root.setOnClickListener {
                 onCrimeClick(crime.id)
             }
+            root.contentDescription = Utils.getCrimeReport(itemView.context, crime)
 
             crimeSolved.visibility = if (crime.isSolved) {
                 View.VISIBLE
