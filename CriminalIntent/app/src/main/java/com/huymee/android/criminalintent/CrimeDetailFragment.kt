@@ -141,7 +141,7 @@ class CrimeDetailFragment : Fragment() {
             }
 
             crimeCamera.setOnClickListener {
-                photoName = "IMG_${Date()}.JPG"
+                photoName = "IMG_${Date().time}.JPG"
                 val photoFile = File(requireContext().applicationContext.filesDir, photoName!!)
                 val photoUri = FileProvider.getUriForFile(
                     requireContext(),
@@ -351,6 +351,11 @@ class CrimeDetailFragment : Fragment() {
                     )
                     binding.crimePhoto.setImageBitmap(scaledBitmap)
                     binding.crimePhoto.tag = photoFileName
+                    binding.crimePhoto.setOnClickListener {
+                        findNavController().navigate(
+                            CrimeDetailFragmentDirections.showImage(photoFile.path)
+                        )
+                    }
                 }
             } else {
                 binding.crimePhoto.tag = null

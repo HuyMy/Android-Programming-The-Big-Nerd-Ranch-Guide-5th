@@ -28,6 +28,9 @@
         <action
             android:id="@+id/select_time"
             app:destination="@id/timePickerFragment" />
+        <action
+            android:id="@+id/show_image"
+            app:destination="@id/imageDialogFragment" />
     </fragment>
     <dialog
         android:id="@+id/datePickerFragment"
@@ -44,5 +47,14 @@
         <argument
             android:name="crimeDate"
             app:argType="java.util.Date" />
+    </dialog>
+    <dialog
+        android:id="@+id/imageDialogFragment"
+        android:name="com.huymee.android.criminalintent.ImageDialogFragment"
+        android:label="ImageDialogFragment" >
+        <argument
+            android:name="filePath"
+            app:argType="string"
+            android:defaultValue='""' />
     </dialog>
 </navigation>
