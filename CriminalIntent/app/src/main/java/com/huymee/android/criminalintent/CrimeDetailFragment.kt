@@ -349,17 +349,23 @@ class CrimeDetailFragment : Fragment() {
                         measuredView.width,
                         measuredView.height
                     )
-                    binding.crimePhoto.setImageBitmap(scaledBitmap)
-                    binding.crimePhoto.tag = photoFileName
-                    binding.crimePhoto.setOnClickListener {
-                        findNavController().navigate(
-                            CrimeDetailFragmentDirections.showImage(photoFile.path)
-                        )
+                    binding.crimePhoto.apply {
+                        setImageBitmap(scaledBitmap)
+                        tag = photoFileName
+                        setOnClickListener {
+                            findNavController().navigate(
+                                CrimeDetailFragmentDirections.showImage(photoFile.path)
+                            )
+                        }
+                        contentDescription = getString(R.string.crime_photo_image_description)
                     }
                 }
             } else {
-                binding.crimePhoto.tag = null
-                binding.crimePhoto.setImageBitmap(null)
+                binding.crimePhoto.apply {
+                    tag = null
+                    setImageBitmap(null)
+                    contentDescription = getString(R.string.crime_photo_no_image_description)
+                }
             }
         }
     }

@@ -4,6 +4,7 @@
     <string name="crime_title_label">Title</string>
     <string name="crime_details_label">Details</string>
     <string name="crime_solved_label">Solved</string>
+
     <string name="new_crime">New Crime</string>
     <string name="add_crime">Add Crime</string>
     <string name="no_crime">There are no crimes</string>
@@ -25,4 +26,9 @@
     <string name="message_permission_disabled">You have disabled the permissions permanently.\n
         To enable the permissions, please go to Settings -> Permissions and enable the required Permissions,
         pressing OK you will be navigated to Settings screen</string>
+    <string name="crime_photo_button_description">Take photo of crime scene</string>
+    <string name="crime_photo_no_image_description">
+        Crime scene photo (not set)
+    </string>
+    <string name="crime_photo_image_description">Crime scene photo (set)</string>
 </resources>

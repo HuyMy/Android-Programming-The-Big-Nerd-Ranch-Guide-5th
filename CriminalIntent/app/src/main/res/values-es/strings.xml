@@ -26,4 +26,13 @@
     <string name="message_permission_disabled">Has desactivado los permisos permanentemente.\n
         Para habilitar los permisos, vaya a Configuración -> Permisos y habilite los permisos requeridos,
         Al presionar OK, accederá a la pantalla Configuración</string>
+    <string name="crime_photo_button_description">
+        Tomar foto de la escena del crimen
+    </string>
+    <string name="crime_photo_no_image_description">
+        Foto de la escena del crimen (no establecida)
+    </string>
+    <string name="crime_photo_image_description">
+        Foto de la escena del crimen (establecida)
+    </string>
 </resources>
