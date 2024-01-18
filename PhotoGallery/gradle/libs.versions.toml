@@ -1,5 +1,5 @@
 [versions]
-agp = "8.3.0-beta01"
+agp = "8.3.0-beta02"
 kotlin = "1.9.21"
 coreKtx = "1.12.0"
 junit = "4.13.2"
@@ -11,12 +11,13 @@ activity = "1.8.2"
 constraintlayout = "2.1.4"
 fragmentKtx = "1.6.2"
 recyclerview = "1.3.2"
-lifecycle = "2.6.2"
+lifecycle = "2.7.0"
 retrofit = "2.9.0"
 okhttp = "4.12.0"
 coroutines = "1.8.0-RC2"
 ksp = "1.9.21-1.0.15"
 moshi = "1.15.0"
+coil = "2.0.0-rc02"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -38,6 +39,7 @@ retrofit-converter-moshi = { group = "com.squareup.retrofit2", name = "converter
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
