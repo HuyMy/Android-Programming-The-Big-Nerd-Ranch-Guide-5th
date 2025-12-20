@@ -57,7 +57,6 @@ dependencies {
     implementation(libs.squareup.moshi)
     ksp(libs.squareup.moshi.kotlin.codegen)
     implementation(libs.retrofit.converter.moshi)
-    implementation(libs.coil)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
