@@ -57,6 +57,7 @@ dependencies {
     implementation(libs.squareup.moshi)
     implementation(libs.retrofit.converter.moshi)
     implementation(libs.okhttp)
+    implementation(libs.coil)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
     ksp(libs.squareup.moshi.kotlin.codegen)
