@@ -58,6 +58,8 @@ dependencies {
     implementation(libs.retrofit.converter.moshi)
     implementation(libs.okhttp)
     implementation(libs.coil)
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.common)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
     ksp(libs.squareup.moshi.kotlin.codegen)

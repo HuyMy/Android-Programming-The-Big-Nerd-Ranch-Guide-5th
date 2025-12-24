@@ -1,12 +1,16 @@
 package com.example.huymy.photogallery
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.example.huymy.photogallery.api.FlickrApi
+import kotlinx.coroutines.flow.Flow
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
 
 class PhotoRepository {
-    val flickrApi: FlickrApi
+    private val flickrApi: FlickrApi
 
     init {
         val retrofit: Retrofit = Retrofit.Builder()
@@ -16,5 +20,13 @@ class PhotoRepository {
         flickrApi = retrofit.create<FlickrApi>()
     }
 
-    suspend fun fetchPhotos(): List<GalleryItem> = flickrApi.fetchPhotos().photos.galleryItems
+    fun getPhotos(): Flow<PagingData<GalleryItem>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 100,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = { PhotoPagingSource(flickrApi) }
+        ).flow
+    }
 }

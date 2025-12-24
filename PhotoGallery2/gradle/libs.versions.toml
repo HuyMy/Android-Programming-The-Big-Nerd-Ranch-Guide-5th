@@ -19,6 +19,7 @@ coroutines = "1.10.2"
 ksp = "2.3.4"
 moshi = "1.15.2"
 coil = "2.7.0"
+paging = "3.3.6"
 composeBom = "2024.09.00"
 
 [libraries]
@@ -39,6 +40,8 @@ squareup-moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-ko
 retrofit-converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
+androidx-paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
+androidx-paging-common = { group = "androidx.paging", name = "paging-common", version.ref = "paging" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
