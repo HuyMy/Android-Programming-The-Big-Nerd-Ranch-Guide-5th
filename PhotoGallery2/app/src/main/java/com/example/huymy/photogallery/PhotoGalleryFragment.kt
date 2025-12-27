@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -32,6 +35,12 @@ class PhotoGalleryFragment : Fragment() {
     ): View {
         _binding = FragmentPhotoGalleryBinding.inflate(inflater, container, false)
         binding.photoGrid.layoutManager = GridLayoutManager(context, 3)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.appActionBar) { view, insets ->
+            val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+            view.updatePadding(top = statusBarHeight)
+            insets
+        }
         return binding.root
     }
 
