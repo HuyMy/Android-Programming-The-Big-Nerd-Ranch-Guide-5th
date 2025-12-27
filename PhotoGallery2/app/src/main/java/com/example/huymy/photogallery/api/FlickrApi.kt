@@ -2,16 +2,12 @@ package com.example.huymy.photogallery.api
 
 import retrofit2.http.GET
 import retrofit2.http.Query
-
-private const val API_KEY = "9f01f1bec5a03a575a68d0340568af61"
+import retrofit2.http.QueryMap
 
 interface FlickrApi {
-    @GET(
-        "services/rest/?method=flickr.interestingness.getList" +
-                "&api_key=$API_KEY" +
-                "&format=json" +
-                "&nojsoncallback=1" +
-                "&extras=url_s"
-    )
+    @GET("services/rest/?method=flickr.interestingness.getList")
     suspend fun fetchPhotos(@Query("page") page: Int): FlickrResponse
+
+    @GET("services/rest/?method=flickr.photos.search")
+    suspend fun searchPhotos(@QueryMap options: Map<String, String>): FlickrResponse
 }

@@ -8,6 +8,8 @@ import com.example.huymy.photogallery.api.FlickrApi
 private const val TAG = "PhotoPagingSource"
 
 class PhotoPagingSource(private val flickrApi: FlickrApi) : PagingSource<Int, GalleryItem>() {
+    private var query: String = "skyscraper"
+
     override fun getRefreshKey(state: PagingState<Int, GalleryItem>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
             state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
@@ -18,7 +20,7 @@ class PhotoPagingSource(private val flickrApi: FlickrApi) : PagingSource<Int, Ga
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, GalleryItem> {
         val page = params.key ?: 1
         return try {
-            val response = flickrApi.fetchPhotos(page)
+            val response = flickrApi.searchPhotos(mapOf("page" to page.toString(), "text" to query))
             val photos = response.photos.galleryItems
             LoadResult.Page(
                 data = photos,
