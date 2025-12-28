@@ -72,6 +72,16 @@ class PhotoGalleryFragment : Fragment() {
                 return false
             }
         })
+
+        binding.appActionBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.menu_item_clear -> {
+                    photoGalleryViewModel.setQuery("")
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     override fun onDestroyView() {
