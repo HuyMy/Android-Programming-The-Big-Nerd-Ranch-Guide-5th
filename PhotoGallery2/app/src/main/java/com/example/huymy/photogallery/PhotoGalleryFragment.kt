@@ -26,6 +26,7 @@ class PhotoGalleryFragment : Fragment() {
         get() = checkNotNull(_binding) {
             "Cannot access binding because it is null. Is the view visible?"
         }
+    private var searchView: SearchView? = null
 
     private val photoGalleryViewModel: PhotoGalleryViewModel by viewModels()
 
@@ -53,14 +54,21 @@ class PhotoGalleryFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                photoGalleryViewModel.galleryItems.collectLatest { pagingData ->
-                    adapter.submitData(pagingData)
+                launch {
+                    photoGalleryViewModel.galleryItems.collectLatest { pagingData ->
+                        adapter.submitData(pagingData)
+                    }
+                }
+                launch {
+                    photoGalleryViewModel.currentQuery.collect { query ->
+                        searchView?.setQuery(query, false)
+                    }
                 }
             }
         }
 
         val searchItem = binding.appActionBar.menu.findItem(R.id.menu_item_search)
-        val searchView = searchItem.actionView as? SearchView
+        searchView = searchItem.actionView as? SearchView
 
         searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
