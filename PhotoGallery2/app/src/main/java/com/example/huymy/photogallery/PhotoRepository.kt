@@ -27,13 +27,9 @@ class PhotoRepository {
         flickrApi = retrofit.create<FlickrApi>()
     }
 
-    fun getPhotos(query: String): Flow<PagingData<GalleryItem>> {
-        return Pager(
-            config = PagingConfig(
-                pageSize = 100,
-                enablePlaceholders = false
-            ),
-            pagingSourceFactory = { PhotoPagingSource(flickrApi, query) }
-        ).flow
-    }
+    suspend fun fetchPhotos(): List<GalleryItem> =
+        flickrApi.fetchPhotos().photos.galleryItems
+
+    suspend fun searchPhotos(query: String): List<GalleryItem> =
+        flickrApi.searchPhotos(query).photos.galleryItems
 }

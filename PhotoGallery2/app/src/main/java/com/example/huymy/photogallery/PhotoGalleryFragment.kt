@@ -19,7 +19,6 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.example.huymy.photogallery.databinding.FragmentPhotoGalleryBinding
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 private const val TAG = "PhotoGalleryFragment"
@@ -68,20 +67,11 @@ class PhotoGalleryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = PhotoListAdapter()
-        binding.photoGrid.adapter = adapter
-
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    photoGalleryViewModel.galleryItems.collectLatest { pagingData ->
-                        adapter.submitData(pagingData)
-                    }
-                }
-                launch {
-                    photoGalleryViewModel.currentQuery.collect { query ->
-                        searchView?.setQuery(query, false)
-                    }
+                photoGalleryViewModel.uiState.collect {state ->
+                    binding.photoGrid.adapter = PhotoListAdapter(state.images)
+                    searchView?.setQuery(state.query, false)
                 }
             }
         }
