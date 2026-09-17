@@ -1,6 +1,8 @@
 package com.huymy.example.draganddraw
 
 import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Paint
 import android.graphics.PointF
 import android.util.AttributeSet
 import android.util.Log
@@ -13,6 +15,13 @@ class BoxDrawingView(context: Context, attrs: AttributeSet? = null) : View(conte
 
     private var currentBox: Box? = null
     private val boxes = mutableListOf<Box>()
+    private val boxPaint = Paint().apply {
+        color = resources.getColor(R.color.box_paint_color, null)
+    }
+    private val backgroundPaint = Paint().apply {
+        color = resources.getColor(R.color.back_ground_paint_color, null)
+    }
+
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val current = PointF(event.x, event.y)
@@ -43,6 +52,13 @@ class BoxDrawingView(context: Context, attrs: AttributeSet? = null) : View(conte
         Log.i(TAG, "$action at x=${current.x}, y=${current.y}")
 
         return true
+    }
+
+    override fun onDraw(canvas: Canvas) {
+        canvas.drawPaint(backgroundPaint)
+        boxes.forEach { box ->
+            canvas.drawRect(box.toRect(), boxPaint)
+        }
     }
 
     private fun updateCurrentBox(current: PointF) {

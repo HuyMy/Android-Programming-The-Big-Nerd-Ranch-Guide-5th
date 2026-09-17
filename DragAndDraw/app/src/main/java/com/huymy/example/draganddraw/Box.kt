@@ -1,6 +1,7 @@
 package com.huymy.example.draganddraw
 
 import android.graphics.PointF
+import android.graphics.RectF
 
 data class Box(val start: PointF) {
 
@@ -17,4 +18,6 @@ data class Box(val start: PointF) {
 
     val bottom: Float
         get() = start.y.coerceAtLeast(end.y)
+
+    fun toRect() = RectF(left, top, right, bottom)
 }
