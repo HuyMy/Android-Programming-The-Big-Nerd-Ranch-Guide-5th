@@ -4,22 +4,48 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.PointF
+import android.os.Build
+import android.os.Bundle
+import android.os.Parcelable
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import androidx.annotation.RequiresApi
+import java.util.Collections.emptyList
 
 private const val TAG = "BoxDrawingView"
+private const val KEY_SUPER_STATE = "superState"
+private const val KEY_BOXES = "boxes"
 
 class BoxDrawingView(context: Context, attrs: AttributeSet? = null) : View(context, attrs) {
 
     private var currentBox: Box? = null
-    private val boxes = mutableListOf<Box>()
+    private var boxes = mutableListOf<Box>()
     private val boxPaint = Paint().apply {
         color = resources.getColor(R.color.box_paint_color, null)
     }
     private val backgroundPaint = Paint().apply {
         color = resources.getColor(R.color.back_ground_paint_color, null)
+    }
+
+    override fun onSaveInstanceState(): Parcelable? {
+        val superState = super.onSaveInstanceState()
+        return Bundle().apply {
+            putParcelable(KEY_SUPER_STATE, superState)
+            putParcelableArrayList(KEY_BOXES, ArrayList(boxes))
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        if (state is Bundle) {
+            boxes = state.getParcelableArrayList(KEY_BOXES, Box::class.java) ?: emptyList()
+            Log.i(TAG, "Loaded ${boxes.size} boxes")
+            super.onRestoreInstanceState(state.getParcelable(KEY_SUPER_STATE))
+        } else {
+            super.onRestoreInstanceState(state)
+        }
     }
 
 
